@@ -52,6 +52,6 @@ module "test" {
   # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
   # ...
   enable_telemetry    = var.enable_telemetry # see variables.tf
-  name                = "TODO" # TODO update with module.naming.<RESOURCE_TYPE>.name_unique
+  name                = module.naming.user_assigned_identity.name_unique
   resource_group_name = azurerm_resource_group.this.name
 }
