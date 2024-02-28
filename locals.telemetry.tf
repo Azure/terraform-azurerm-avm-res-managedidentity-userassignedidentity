@@ -3,10 +3,10 @@ locals {
   # See https://azure.github.io/Azure-Verified-Modules/specs/shared/#id-sfr3---category-telemetry---deploymentusage-telemetry
   telem_puid = "46d3xgtf"
 
-  
+
   module_name = "azurerm_user_assigned_identity"
 
-  
+
   module_type = "res"
 
   # This ensures we don't get errors if telemetry is disabled.
