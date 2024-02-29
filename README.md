@@ -10,7 +10,6 @@ Things to do:
 1. Create a user-assigned managed identity in your test subscription.
 1. Create a role assignment for the managed identity on your test subscription, use the minimum required role.
 1. Configure federated identity credentials on the user assigned managed identity. Use the GitHub environment.
-1. Search and update TODOs within the code and remove the TODO comments once complete.
 
 > [!IMPORTANT]
 > As the overall AVM framework is not GA (generally available) yet - the CI framework and test automation is not fully functional and implemented across all supported languages yet - breaking changes are expected, and additional customer feedback is yet to be gathered and incorporated. Hence, modules **MUST NOT** be published at version `1.0.0` or higher at this time.
@@ -121,6 +120,14 @@ Description: This is the principal id for the user assigned identity.
 ### <a name="output_resource"></a> [resource](#output\_resource)
 
 Description: This is the full output for the resource.
+
+### <a name="output_resourceName"></a> [resourceName](#output\_resourceName)
+
+Description: The name of the User Assigned Identity that was created
+
+### <a name="output_resourceObject"></a> [resourceObject](#output\_resourceObject)
+
+Description: The object of type User Assigned Identity that was created
 
 ## Modules
 
