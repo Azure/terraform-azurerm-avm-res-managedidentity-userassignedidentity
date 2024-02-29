@@ -6,7 +6,7 @@ data "azurerm_resource_group" "parent" {
 
 resource "azurerm_user_assigned_identity" "this" {
   name                = var.name
-  resource_group_name = data.azurerm_resource_group.parent.name
+  resource_group_name = data.azurerm_resource_group.parent[0].name
   location            = coalesce(var.location, local.resource_group_location)
 }
 
