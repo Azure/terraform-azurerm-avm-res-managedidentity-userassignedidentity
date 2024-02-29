@@ -9,6 +9,7 @@ resource "azurerm_user_assigned_identity" "this" {
   location            = coalesce(var.location, local.resource_group_location)
   name                = var.name
   resource_group_name = data.azurerm_resource_group.parent[0].name
+  tags                = var.tags
 }
 
 # required AVM resources interfaces
