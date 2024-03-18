@@ -1,11 +1,19 @@
-output "private_endpoints" {
-  description = "A map of private endpoints. The map key is the supplied input to var.private_endpoints. The map value is the entire azurerm_private_endpoint resource."
-  value       = azurerm_private_endpoint.this
+output "principal_id" {
+  description = "This is the principal id for the user assigned identity."
+  value       = azurerm_user_assigned_identity.this.principal_id
 }
 
-# Module owners should include the full resource via a 'resource' output
-# https://azure.github.io/Azure-Verified-Modules/specs/terraform/#id-tffr2---category-outputs---additional-terraform-outputs
-output "resource" {
+output "resource_id" {
   description = "This is the full output for the resource."
-  value       = azurerm_resource_group.TODO # TODO: Replace this dummy resource azurerm_resource_group.TODO with your module resource
+  value       = azurerm_user_assigned_identity.this.id
+}
+
+output "resource_name" {
+  description = "The name of the User Assigned Identity that was created"
+  value       = azurerm_user_assigned_identity.this.name
+}
+
+output "resource_object" {
+  description = "The object of type User Assigned Identity that was created"
+  value       = azurerm_user_assigned_identity.this
 }
