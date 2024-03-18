@@ -9,11 +9,11 @@ output "resource_id" {
 }
 
 output "resource_name" {
-  description = "The name of the User Assigned Identity that was created"
+  description = "The name of the User Assigned Identity that was created."
   value       = azurerm_user_assigned_identity.this.name
 }
 
 output "resource_object" {
-  description = "The object of type User Assigned Identity that was created"
+  description = "The object of type User Assigned Identity that was created."
   value       = azurerm_user_assigned_identity.this
 }
