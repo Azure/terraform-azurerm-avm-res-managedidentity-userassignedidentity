@@ -1,14 +1,8 @@
 
-data "azurerm_resource_group" "parent" {
-  count = var.location == null ? 1 : 0
-
-  name = var.resource_group_name
-}
-
 resource "azurerm_user_assigned_identity" "this" {
-  location            = coalesce(var.location, local.resource_group_location)
+  location            = var.location
   name                = var.name
-  resource_group_name = data.azurerm_resource_group.parent[0].name
+  resource_group_name = var.resource_group_name
   tags                = var.tags
 }
 
