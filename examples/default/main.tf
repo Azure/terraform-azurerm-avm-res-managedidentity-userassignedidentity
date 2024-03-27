@@ -51,6 +51,7 @@ module "test" {
   source = "../../"
   # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
   # ...
+  location            = azurerm_resource_group.this.location
   enable_telemetry    = var.enable_telemetry # see variables.tf
   name                = module.naming.user_assigned_identity.name_unique
   resource_group_name = azurerm_resource_group.this.name
