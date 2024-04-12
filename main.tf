@@ -1,7 +1,7 @@
 
 resource "azurerm_user_assigned_identity" "this" {
   location            = var.location
-  name                = var.name
+  name                = "${local.managed_identity_abrv_prefix}-${var.name}"
   resource_group_name = var.resource_group_name
   tags                = var.tags
 }
