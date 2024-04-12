@@ -110,6 +110,10 @@ Default: `{}`
 
 The following outputs are exported:
 
+### <a name="output_name"></a> [name](#output\_name)
+
+Description: The name of the User Assigned Identity that was created.
+
 ### <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id)
 
 Description: This is the principal id for the user assigned identity.
@@ -117,10 +121,6 @@ Description: This is the principal id for the user assigned identity.
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: This is the full output for the resource.
-
-### <a name="output_resource_name"></a> [resource\_name](#output\_resource\_name)
-
-Description: The name of the User Assigned Identity that was created.
 
 ### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
 
