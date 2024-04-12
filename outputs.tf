@@ -8,7 +8,7 @@ output "resource_id" {
   value       = azurerm_user_assigned_identity.this.id
 }
 
-output "resource_name" {
+output "name" {
   description = "The name of the User Assigned Identity that was created."
   value       = azurerm_user_assigned_identity.this.name
 }
