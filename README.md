@@ -117,6 +117,10 @@ The following outputs are exported:
 
 Description: This is the principal id for the user assigned identity.
 
+### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: The object of type User Assigned Identity that was created.
+
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: This is the full output for the resource.
@@ -124,10 +128,6 @@ Description: This is the full output for the resource.
 ### <a name="output_resource_name"></a> [resource\_name](#output\_resource\_name)
 
 Description: The name of the User Assigned Identity that was created.
-
-### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
-
-Description: The object of type User Assigned Identity that was created.
 
 ## Modules
 
