@@ -85,26 +85,29 @@ Default: `true`
 
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
-Description: The lock level to apply. Default is `None`. Possible values are `None`, `CanNotDelete`, and `ReadOnly`.
+Description:   Controls the Resource Lock configuration for this resource. The following properties can be specified:
+
+  - `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
+  - `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
 
 Type:
 
 ```hcl
 object({
+    kind = string
     name = optional(string, null)
-    kind = optional(string, "None")
   })
 ```
 
-Default: `{}`
+Default: `null`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: The map of tags to be applied to the resource
+Description: (Optional) Tags of the resource.
 
-Type: `map(any)`
+Type: `map(string)`
 
-Default: `{}`
+Default: `null`
 
 ## Outputs
 
@@ -114,6 +117,10 @@ The following outputs are exported:
 
 Description: This is the principal id for the user assigned identity.
 
+### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: The object of type User Assigned Identity that was created.
+
 ### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: This is the full output for the resource.
@@ -121,10 +128,6 @@ Description: This is the full output for the resource.
 ### <a name="output_resource_name"></a> [resource\_name](#output\_resource\_name)
 
 Description: The name of the User Assigned Identity that was created.
-
-### <a name="output_resource_object"></a> [resource\_object](#output\_resource\_object)
-
-Description: The object of type User Assigned Identity that was created.
 
 ## Modules
 
