@@ -1,5 +1,5 @@
 locals {
-  module_name = "azurerm_user_assigned_identity"
+  module_name = "managedidentity-userassignedidentity"
   module_type = "res"
   # This constructs the ARM deployment name that is used for the telemetry.
   # We shouldn't ever hit the 64 character limit but use substr just in case.
