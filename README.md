@@ -119,6 +119,10 @@ Default: `null`
 
 The following outputs are exported:
 
+### <a name="output_client_id"></a> [client\_id](#output\_client\_id)
+
+Description: This is the client id for the user assigned identity.
+
 ### <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id)
 
 Description: This is the principal id for the user assigned identity.
@@ -134,6 +138,10 @@ Description: This is the full output for the resource.
 ### <a name="output_resource_name"></a> [resource\_name](#output\_resource\_name)
 
 Description: The name of the User Assigned Identity that was created.
+
+### <a name="output_tenant_id"></a> [tenant\_id](#output\_tenant\_id)
+
+Description: The ID of the Tenant which the Identity belongs to.
 
 ## Modules
 
