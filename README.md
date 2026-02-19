@@ -38,7 +38,9 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
+- [azurerm_federated_identity_credential.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) (resource)
 - [azurerm_management_lock.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
+- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
 - [modtm_telemetry.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/resources/telemetry) (resource)
 - [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
@@ -82,6 +84,28 @@ Type: `bool`
 
 Default: `true`
 
+### <a name="input_federated_identity_credentials"></a> [federated\_identity\_credentials](#input\_federated\_identity\_credentials)
+
+Description: A map of federated identity credentials to create on the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+
+- `audiences` - (Required) Specifies the audience for this Federated Identity Credential.
+- `issuer` - (Required) Specifies the issuer of this Federated Identity Credential.
+- `name` - (Required) Specifies the name of this Federated Identity Credential. Changing this forces a new resource to be created.
+- `subject` - (Required) Specifies the subject for this Federated Identity Credential.
+
+Type:
+
+```hcl
+map(object({
+    audience = list(string)
+    issuer   = string
+    name     = string
+    subject  = string
+  }))
+```
+
+Default: `{}`
+
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
 Description:   Controls the Resource Lock configuration for this resource. The following properties can be specified:
@@ -99,6 +123,34 @@ object({
 ```
 
 Default: `null`
+
+### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
+
+Description: A map of role assignments to create on the container app environment. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+
+- `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
+- `scope` - The ID of the scope to assign the role to.
+- `condition_version` - (Optional) The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
+- `condition` - (Optional) The condition which will be used to scope the role assignment.
+- `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
+- `description` - (Optional) The description of the role assignment.
+- `skip_service_principal_aad_check` - (Optional) Skip validating the Service Principal in AAD before applying the Role Assignment. Defaults to `false`. Changing this forces a new resource to be created.
+
+Type:
+
+```hcl
+map(object({
+    role_definition_id_or_name             = string
+    scope                                  = string
+    condition                              = optional(string, null)
+    condition_version                      = optional(string, null)
+    delegated_managed_identity_resource_id = optional(string, null)
+    description                            = optional(string, null)
+    skip_service_principal_aad_check       = optional(bool, null)
+  }))
+```
+
+Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
