@@ -20,12 +20,11 @@ resource "azurerm_management_lock" "this" {
 resource "azurerm_federated_identity_credential" "this" {
   for_each = var.federated_identity_credentials
 
-  audience            = each.value.audience
-  issuer              = each.value.issuer
-  name                = each.value.name
-  parent_id           = azurerm_user_assigned_identity.this.id
-  resource_group_name = azurerm_user_assigned_identity.this.resource_group_name
-  subject             = each.value.subject
+  audience  = each.value.audience
+  issuer    = each.value.issuer
+  name      = each.value.name
+  parent_id = azurerm_user_assigned_identity.this.id
+  subject   = each.value.subject
 }
 
 
