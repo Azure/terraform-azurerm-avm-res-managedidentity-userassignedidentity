@@ -1,4 +1,3 @@
-
 resource "azurerm_user_assigned_identity" "this" {
   location            = var.location
   name                = var.name
@@ -16,17 +15,15 @@ resource "azurerm_management_lock" "this" {
   notes      = var.lock.kind == "CanNotDelete" ? "Cannot delete the resource or its child resources." : "Cannot delete or modify the resource or its child resources."
 }
 
-
 resource "azurerm_federated_identity_credential" "this" {
   for_each = var.federated_identity_credentials
 
   audience  = each.value.audience
   issuer    = each.value.issuer
   name      = each.value.name
-  parent_id = azurerm_user_assigned_identity.this.id
   subject   = each.value.subject
+  parent_id = azurerm_user_assigned_identity.this.id
 }
-
 
 resource "azurerm_role_assignment" "this" {
   for_each = var.role_assignments
