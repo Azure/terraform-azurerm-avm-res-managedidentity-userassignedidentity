@@ -51,6 +51,17 @@ variable "federated_identity_credentials" {
   nullable    = false
 }
 
+variable "isolation_scope" {
+  type        = string
+  default     = null
+  description = "(Optional) The isolation scope for the user assigned identity. The only possible value is Regional."
+
+  validation {
+    condition     = var.isolation_scope == null ? true : var.isolation_scope == "Regional"
+    error_message = "The isolation_scope must be null or `Regional`."
+  }
+}
+
 variable "lock" {
   type = object({
     kind = string
@@ -82,7 +93,7 @@ variable "role_assignments" {
   }))
   default     = {}
   description = <<-EOT
-  A map of role assignments to create on the container app environment. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
   - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
   - `scope` - The ID of the scope to assign the role to.
