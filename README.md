@@ -106,6 +106,14 @@ map(object({
 
 Default: `{}`
 
+### <a name="input_isolation_scope"></a> [isolation\_scope](#input\_isolation\_scope)
+
+Description: (Optional) The isolation scope for the user assigned identity. The only possible value is Regional.
+
+Type: `string`
+
+Default: `null`
+
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
 Description:   Controls the Resource Lock configuration for this resource. The following properties can be specified:
@@ -126,7 +134,7 @@ Default: `null`
 
 ### <a name="input_role_assignments"></a> [role\_assignments](#input\_role\_assignments)
 
-Description: A map of role assignments to create on the container app environment. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+Description: A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
 - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
 - `scope` - The ID of the scope to assign the role to.
