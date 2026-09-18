@@ -58,7 +58,7 @@ module "test" {
   location            = azurerm_resource_group.this.location
   name                = module.naming.user_assigned_identity.name_unique
   resource_group_name = azurerm_resource_group.this.name
-  enable_telemetry    = false # see variables.tf
+  enable_telemetry    = var.enable_telemetry # see variables.tf
   role_assignments = {
     reader_on_resource_group = {
       role_definition_id_or_name = "Reader"
@@ -104,7 +104,7 @@ If it is set to false, then no telemetry will be collected.
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ## Outputs
 
