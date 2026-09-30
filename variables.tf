@@ -43,7 +43,7 @@ variable "federated_identity_credentials" {
   description = <<-EOT
   A map of federated identity credentials to create on the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
-  - `audiences` - (Required) Specifies the audience for this Federated Identity Credential.
+  - `audience` - (Required) Specifies the audience for this Federated Identity Credential.
   - `issuer` - (Required) Specifies the issuer of this Federated Identity Credential.
   - `name` - (Required) Specifies the name of this Federated Identity Credential. Changing this forces a new resource to be created.
   - `subject` - (Required) Specifies the subject for this Federated Identity Credential.
