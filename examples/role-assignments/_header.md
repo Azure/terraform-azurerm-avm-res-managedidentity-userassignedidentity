@@ -1,3 +1,3 @@
 # Role assignments example
 
-This deploys the module with a role assignment scoped to the created resource group.
+This grants the created identity Reader access at the example resource-group scope through `outbound_role_assignments`.
