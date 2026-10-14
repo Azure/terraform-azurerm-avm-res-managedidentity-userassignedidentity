@@ -1,4 +1,3 @@
-# tflint-ignore-file: role_assignments
 variable "location" {
   type        = string
   description = "Azure region where the resource should be deployed.  If null, the location will be inferred from the resource group location."
@@ -81,7 +80,7 @@ variable "lock" {
   }
 }
 
-variable "role_assignments" {
+variable "outbound_role_assignments" {
   type = map(object({
     role_definition_id_or_name             = string
     scope                                  = string
@@ -93,14 +92,14 @@ variable "role_assignments" {
   }))
   default     = {}
   description = <<-EOT
-  A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+  A map of outbound role assignments granting the created user assigned identity access at each supplied scope. The principal is always the created identity; these assignments do not grant other principals access to the identity resource. Map keys identify assignment instances and must remain stable to preserve their resource addresses.
 
   - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
   - `scope` - The ID of the scope to assign the role to.
   - `condition_version` - (Optional) The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
   - `condition` - (Optional) The condition which will be used to scope the role assignment.
   - `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
-  - `description` - (Optional) The description of the role assignment.
+  - `description` - (Optional) The description of the role assignment. Changing this forces a new assignment to be created.
   - `skip_service_principal_aad_check` - (Optional) Skip validating the Service Principal in AAD before applying the Role Assignment. Defaults to `false`. Changing this forces a new resource to be created.
   EOT
   nullable    = false
