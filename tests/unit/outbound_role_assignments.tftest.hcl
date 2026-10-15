@@ -23,14 +23,6 @@ mock_provider "azurerm" {
   }
 }
 
-mock_provider "modtm" {
-  alias = "mock"
-}
-
-mock_provider "random" {
-  alias = "mock"
-}
-
 variables {
   enable_telemetry    = false
   location            = "westeurope"
@@ -44,8 +36,8 @@ run "no_roles_by_default" {
   providers = {
     azapi   = azapi.mock
     azurerm = azurerm.mock
-    modtm   = modtm.mock
-    random  = random.mock
+
+
   }
 
   assert {
@@ -60,8 +52,8 @@ run "null_roles_use_empty_default" {
   providers = {
     azapi   = azapi.mock
     azurerm = azurerm.mock
-    modtm   = modtm.mock
-    random  = random.mock
+
+
   }
 
   variables {
@@ -80,8 +72,8 @@ run "named_roles_on_distinct_scopes" {
   providers = {
     azapi   = azapi.mock
     azurerm = azurerm.mock
-    modtm   = modtm.mock
-    random  = random.mock
+
+
   }
 
   variables {
@@ -141,8 +133,8 @@ run "role_definition_id_with_conditions" {
   providers = {
     azapi   = azapi.mock
     azurerm = azurerm.mock
-    modtm   = modtm.mock
-    random  = random.mock
+
+
   }
 
   variables {
@@ -190,8 +182,8 @@ run "explicit_aad_check_and_case_insensitive_id" {
   providers = {
     azapi   = azapi.mock
     azurerm = azurerm.mock
-    modtm   = modtm.mock
-    random  = random.mock
+
+
   }
 
   variables {
