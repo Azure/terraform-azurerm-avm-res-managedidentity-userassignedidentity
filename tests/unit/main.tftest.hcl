@@ -19,7 +19,6 @@ mock_provider "azapi" {
     }
   }
 }
-mock_provider "modtm" {}
 mock_provider "random" {}
 
 variables {
@@ -55,7 +54,7 @@ run "lock_and_children" {
         subject  = "system:serviceaccount:default:sa"
       }
     }
-    role_assignments = {
+    outbound_role_assignments = {
       reader = {
         role_definition_id_or_name = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
         scope                      = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg"

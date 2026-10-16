@@ -54,7 +54,7 @@ module "test" {
   name                = module.naming.user_assigned_identity.name_unique
   resource_group_name = azapi_resource.resource_group.name
   enable_telemetry    = var.enable_telemetry # see variables.tf
-  role_assignments = {
+  outbound_role_assignments = {
     reader_on_resource_group = {
       role_definition_id_or_name = "Reader"
       scope                      = azapi_resource.resource_group.id
