@@ -6,9 +6,9 @@ Creates a user-assigned managed identity with optional federated identity creden
 
 ## Breaking input migration
 
-Rename `role_assignments` to `outbound_role_assignments` in module calls. Keep map keys and values unchanged: roles still grant the created identity access at each supplied `scope`, and resource addresses remain unchanged. The old input is no longer accepted; no state migration is required.
+Rename `role_assignments` to `outbound_role_assignments` in module calls. Keep map keys and values unchanged: roles still grant the created identity access at each supplied `scope`, and resource addresses are the AzAPI addresses described by the `moved` blocks. The old input is no longer accepted.
 
-Outbound assignment `description` values are now applied instead of ignored. AzureRM recreates an assignment when its description changes.
+Outbound assignment `description` values are applied to the role assignment.
 
 > [!IMPORTANT]
 > As the overall AVM framework is not GA (generally available) yet - the CI framework and test automation is not fully functional and implemented across all supported languages yet - breaking changes are expected, and additional customer feedback is yet to be gathered and incorporated. Hence, modules **MUST NOT** be published at version `1.0.0` or higher at this time.
@@ -26,19 +26,22 @@ The following requirements are needed by this module:
 
 - <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~> 2.12)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 4.60.0, < 5.0.0)
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.5)
 
 ## Resources
 
 The following resources are used by this module:
 
+- [azapi_resource.federated_identity_credentials](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.lock](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.role_assignments](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
 - [azapi_resource.telemetry](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
-- [azurerm_federated_identity_credential.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/federated_identity_credential) (resource)
-- [azurerm_management_lock.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
-- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
-- [azurerm_user_assigned_identity.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/user_assigned_identity) (resource)
+- [azapi_resource.this](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
+- [random_uuid.role_assignment_name](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
 - [terraform_data.telemetry](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/resources/data) (resource)
+- [azapi_client_config.current](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/client_config) (data source)
 - [azapi_client_config.telemetry](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/client_config) (data source)
+- [azapi_resource_list.role_definitions](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/resource_list) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -99,6 +102,32 @@ map(object({
 
 Default: `{}`
 
+### <a name="input_ignore_body_changes"></a> [ignore\_body\_changes](#input\_ignore\_body\_changes)
+
+Description: Paths in each resource's `body` whose changes the AzAPI provider ignores. Prefer Terraform's `lifecycle.ignore_changes` when the paths are static; use this variable when the paths must be derived from variables or other non-static values.
+
+Paths use dot notation, for example `properties.isolationScope`. Individual list items cannot be targeted — ignore the whole list property instead. Configuration changes at an ignored path are **not** sent to Azure until that path is removed from the list.
+
+Supplying a non-empty value requires Terraform 1.11 or later, because `ignore_body_changes` is a write-only argument. Changes take effect only after an apply, because the value is held in provider-private state.
+
+- `authorization_locks` - Ignored body paths for the resource lock.
+- `authorization_role_assignments` - Ignored body paths for role assignments.
+- `managedidentity_user_assigned_identities` - Ignored body paths for the user assigned identity.
+- `managedidentity_user_assigned_identities_federated_identity_credentials` - Ignored body paths for federated identity credentials.
+
+Type:
+
+```hcl
+object({
+    authorization_locks                                                     = optional(list(string), [])
+    authorization_role_assignments                                          = optional(list(string), [])
+    managedidentity_user_assigned_identities                                = optional(list(string), [])
+    managedidentity_user_assigned_identities_federated_identity_credentials = optional(list(string), [])
+  })
+```
+
+Default: `{}`
+
 ### <a name="input_isolation_scope"></a> [isolation\_scope](#input\_isolation\_scope)
 
 Description: (Optional) The isolation scope for the user assigned identity. The only possible value is Regional.
@@ -109,17 +138,19 @@ Default: `null`
 
 ### <a name="input_lock"></a> [lock](#input\_lock)
 
-Description:   Controls the Resource Lock configuration for this resource. The following properties can be specified:
+Description: Controls the Resource Lock configuration for this resource. The following properties can be specified:
 
-  - `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
-  - `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
+- `kind` - (Required) The type of lock. Possible values are `\"CanNotDelete\"` and `\"ReadOnly\"`.
+- `name` - (Optional) The name of the lock. If not specified, a name will be generated based on the `kind` value. Changing this forces the creation of a new resource.
+- `notes` - (Optional) Notes about the lock. This value maps to `Microsoft.Authorization/locks.properties.notes`.
 
 Type:
 
 ```hcl
 object({
-    kind = string
-    name = optional(string, null)
+    kind  = string
+    name  = optional(string, null)
+    notes = optional(string, null)
   })
 ```
 
@@ -127,15 +158,16 @@ Default: `null`
 
 ### <a name="input_outbound_role_assignments"></a> [outbound\_role\_assignments](#input\_outbound\_role\_assignments)
 
-Description: A map of outbound role assignments granting the created user assigned identity access at each supplied scope. The principal is always the created identity; these assignments do not grant other principals access to the identity resource. Map keys identify assignment instances and must remain stable to preserve their resource addresses.
+Description: A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
 
 - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
 - `scope` - The ID of the scope to assign the role to.
 - `condition_version` - (Optional) The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
 - `condition` - (Optional) The condition which will be used to scope the role assignment.
 - `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
-- `description` - (Optional) The description of the role assignment. Changing this forces a new assignment to be created.
-- `skip_service_principal_aad_check` - (Optional) Skip validating the Service Principal in AAD before applying the Role Assignment. Defaults to `false`. Changing this forces a new resource to be created.
+- `description` - (Optional) The description of the role assignment.
+- `principal_type` - (Optional) The type of the principal. Possible values are `User`, `Group` and `ServicePrincipal`. Defaults to `ServicePrincipal`.
+- `skip_service_principal_aad_check` - (Optional) No effect when using AzAPI. Retained for backward compatibility.
 
 Type:
 
@@ -147,17 +179,84 @@ map(object({
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
     description                            = optional(string, null)
+    principal_type                         = optional(string, null)
     skip_service_principal_aad_check       = optional(bool, null)
   }))
 ```
 
 Default: `{}`
 
+### <a name="input_resource_types"></a> [resource\_types](#input\_resource\_types)
+
+Description: AzAPI resource types and API versions used by the module.
+
+- `authorization_locks` - Resource type and API version for the resource lock.
+- `authorization_role_assignments` - Resource type and API version for role assignments.
+- `managedidentity_user_assigned_identities` - Resource type and API version for the user assigned identity.
+- `managedidentity_user_assigned_identities_federated_identity_credentials` - Resource type and API version for federated identity credentials.
+
+Type:
+
+```hcl
+object({
+    authorization_locks                                                     = optional(string, "Microsoft.Authorization/locks@2020-05-01")
+    authorization_role_assignments                                          = optional(string, "Microsoft.Authorization/roleAssignments@2022-04-01")
+    managedidentity_user_assigned_identities                                = optional(string, "Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30")
+    managedidentity_user_assigned_identities_federated_identity_credentials = optional(string, "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2024-11-30")
+  })
+```
+
+Default: `{}`
+
+### <a name="input_retry"></a> [retry](#input\_retry)
+
+Description: Retry configuration applied to every `azapi` resource managed by the module. Defaults to `null` (no custom retry).
+
+- `error_message_regex`  - (Optional) A list of regex patterns matching error messages that trigger a retry.
+- `interval_seconds`     - (Optional) Initial interval between retries in seconds.
+- `max_interval_seconds` - (Optional) Maximum interval between retries in seconds.
+
+See <https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource#retry> for full semantics.
+
+Type:
+
+```hcl
+object({
+    error_message_regex  = optional(list(string))
+    interval_seconds     = optional(number)
+    max_interval_seconds = optional(number)
+  })
+```
+
+Default: `null`
+
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
 Description: (Optional) Tags of the resource.
 
 Type: `map(string)`
+
+Default: `null`
+
+### <a name="input_timeouts"></a> [timeouts](#input\_timeouts)
+
+Description: Default per-operation timeouts applied to every `azapi` resource managed by the module. Defaults to `null` (provider defaults). Each value is a Go duration string (e.g. `30m`, `1h`).
+
+- `create` - (Optional) Timeout for create operations.
+- `read`   - (Optional) Timeout for read operations.
+- `update` - (Optional) Timeout for update operations.
+- `delete` - (Optional) Timeout for delete operations.
+
+Type:
+
+```hcl
+object({
+    create = optional(string)
+    read   = optional(string)
+    update = optional(string)
+    delete = optional(string)
+  })
+```
 
 Default: `null`
 
