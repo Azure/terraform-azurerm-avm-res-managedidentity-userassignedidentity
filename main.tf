@@ -127,9 +127,11 @@ resource "azapi_resource" "role_assignments" {
       } : k => v if v != null
     }
   }
-  ignore_body_changes    = length(var.ignore_body_changes.authorization_role_assignments) > 0 ? var.ignore_body_changes.authorization_role_assignments : null
-  response_export_values = []
-  retry                  = var.retry
+  ignore_body_changes = length(var.ignore_body_changes.authorization_role_assignments) > 0 ? var.ignore_body_changes.authorization_role_assignments : null
+  # Principal and scope are immutable on a role assignment, so a new identity principal must replace it.
+  replace_triggers_external_values = [azapi_resource.this.output.properties.principalId]
+  response_export_values           = []
+  retry                            = var.retry
 
   dynamic "timeouts" {
     for_each = var.timeouts == null ? [] : [var.timeouts]
