@@ -102,11 +102,11 @@ data "azapi_resource_list" "role_definitions" {
 
 # The role assignment name must be a GUID; a random value avoids unknown-value replacement.
 resource "random_uuid" "role_assignment_name" {
-  for_each = var.role_assignments
+  for_each = var.outbound_role_assignments
 }
 
 resource "azapi_resource" "role_assignments" {
-  for_each = var.role_assignments
+  for_each = var.outbound_role_assignments
 
   name      = random_uuid.role_assignment_name[each.key].result
   parent_id = each.value.scope

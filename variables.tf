@@ -142,7 +142,7 @@ See <https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/r
 DESCRIPTION
 }
 
-variable "role_assignments" {
+variable "outbound_role_assignments" {
   type = map(object({
     role_definition_id_or_name             = string
     scope                                  = string
