@@ -105,6 +105,33 @@ DESCRIPTION
   }
 }
 
+variable "outbound_role_assignments" {
+  type = map(object({
+    role_definition_id_or_name             = string
+    scope                                  = string
+    condition                              = optional(string, null)
+    condition_version                      = optional(string, null)
+    delegated_managed_identity_resource_id = optional(string, null)
+    description                            = optional(string, null)
+    principal_type                         = optional(string, null)
+    skip_service_principal_aad_check       = optional(bool, null)
+  }))
+  default     = {}
+  description = <<-EOT
+  A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+
+  - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
+  - `scope` - The ID of the scope to assign the role to.
+  - `condition_version` - (Optional) The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
+  - `condition` - (Optional) The condition which will be used to scope the role assignment.
+  - `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
+  - `description` - (Optional) The description of the role assignment.
+  - `principal_type` - (Optional) The type of the principal. Possible values are `User`, `Group` and `ServicePrincipal`. Defaults to `ServicePrincipal`.
+  - `skip_service_principal_aad_check` - (Optional) No effect when using AzAPI. Retained for backward compatibility.
+  EOT
+  nullable    = false
+}
+
 variable "resource_types" {
   type = object({
     authorization_locks                                                     = optional(string, "Microsoft.Authorization/locks@2020-05-01")
@@ -140,33 +167,6 @@ Retry configuration applied to every `azapi` resource managed by the module. Def
 
 See <https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource#retry> for full semantics.
 DESCRIPTION
-}
-
-variable "outbound_role_assignments" {
-  type = map(object({
-    role_definition_id_or_name             = string
-    scope                                  = string
-    condition                              = optional(string, null)
-    condition_version                      = optional(string, null)
-    delegated_managed_identity_resource_id = optional(string, null)
-    description                            = optional(string, null)
-    principal_type                         = optional(string, null)
-    skip_service_principal_aad_check       = optional(bool, null)
-  }))
-  default     = {}
-  description = <<-EOT
-  A map of role assignments to create for the user assigned identity. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-
-  - `role_definition_id_or_name` - The ID or name of the role definition to assign to the principal.
-  - `scope` - The ID of the scope to assign the role to.
-  - `condition_version` - (Optional) The version of the condition syntax. Leave as `null` if you are not using a condition, if you are then valid values are '2.0'.
-  - `condition` - (Optional) The condition which will be used to scope the role assignment.
-  - `delegated_managed_identity_resource_id` - (Optional) The delegated Azure Resource Id which contains a Managed Identity. Changing this forces a new resource to be created. This field is only used in cross-tenant scenario.
-  - `description` - (Optional) The description of the role assignment.
-  - `principal_type` - (Optional) The type of the principal. Possible values are `User`, `Group` and `ServicePrincipal`. Defaults to `ServicePrincipal`.
-  - `skip_service_principal_aad_check` - (Optional) No effect when using AzAPI. Retained for backward compatibility.
-  EOT
-  nullable    = false
 }
 
 variable "tags" {
