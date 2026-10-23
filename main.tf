@@ -73,7 +73,9 @@ resource "azapi_resource" "federated_identity_credentials" {
       subject   = each.value.subject
     }
   }
-  ignore_body_changes    = length(var.ignore_body_changes.managedidentity_user_assigned_identities_federated_identity_credentials) > 0 ? var.ignore_body_changes.managedidentity_user_assigned_identities_federated_identity_credentials : null
+  ignore_body_changes = length(var.ignore_body_changes.managedidentity_user_assigned_identities_federated_identity_credentials) > 0 ? var.ignore_body_changes.managedidentity_user_assigned_identities_federated_identity_credentials : null
+  # Azure does not support concurrent federated identity credential writes under the same identity.
+  locks                  = [azapi_resource.this.id]
   response_export_values = []
   retry                  = var.retry
 
