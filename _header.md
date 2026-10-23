@@ -4,9 +4,9 @@ Creates a user-assigned managed identity with optional federated identity creden
 
 ## Breaking input migration
 
-Rename `role_assignments` to `outbound_role_assignments` in module calls. Keep map keys and values unchanged: roles still grant the created identity access at each supplied `scope`, and resource addresses remain unchanged. The old input is no longer accepted; no state migration is required.
+Rename `role_assignments` to `outbound_role_assignments` in module calls. Keep map keys and values unchanged: roles still grant the created identity access at each supplied `scope`, and resource addresses are the AzAPI addresses described by the `moved` blocks. The old input is no longer accepted.
 
-Outbound assignment `description` values are now applied instead of ignored. AzureRM recreates an assignment when its description changes.
+Outbound assignment `description` values are applied to the role assignment.
 
 > [!IMPORTANT]
 > As the overall AVM framework is not GA (generally available) yet - the CI framework and test automation is not fully functional and implemented across all supported languages yet - breaking changes are expected, and additional customer feedback is yet to be gathered and incorporated. Hence, modules **MUST NOT** be published at version `1.0.0` or higher at this time.
