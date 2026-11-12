@@ -3,6 +3,11 @@ output "client_id" {
   value       = azapi_resource.this.output.properties.clientId
 }
 
+output "outbound_role_assignment_resource_ids" {
+  description = "A map of the outbound role assignment resource IDs, keyed like `outbound_role_assignments`."
+  value       = { for k, v in azapi_resource.role_assignments : k => v.id }
+}
+
 output "principal_id" {
   description = "This is the principal id for the user assigned identity."
   value       = azapi_resource.this.output.properties.principalId
