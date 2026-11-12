@@ -268,6 +268,10 @@ The following outputs are exported:
 
 Description: This is the client id for the user assigned identity.
 
+### <a name="output_outbound_role_assignment_resource_ids"></a> [outbound\_role\_assignment\_resource\_ids](#output\_outbound\_role\_assignment\_resource\_ids)
+
+Description: A map of the outbound role assignment resource IDs, keyed like `outbound_role_assignments`.
+
 ### <a name="output_principal_id"></a> [principal\_id](#output\_principal\_id)
 
 Description: This is the principal id for the user assigned identity.

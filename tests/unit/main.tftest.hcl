@@ -19,6 +19,12 @@ mock_provider "azapi" {
       }
     }
   }
+  override_resource {
+    target = azapi_resource.role_assignments
+    values = {
+      id = "/subscriptions/00000000-0000-0000-0000-000000000000/providers/Microsoft.Authorization/roleAssignments/44444444-4444-4444-4444-444444444444"
+    }
+  }
 }
 
 mock_provider "random" {}
@@ -93,5 +99,23 @@ run "role_assignment_replaces_on_principal_change" {
   assert {
     condition     = azapi_resource.role_assignments["reader"].replace_triggers_external_values[0] == "22222222-2222-2222-2222-222222222222"
     error_message = "Role assignments must be replaced when the identity principalId changes."
+  }
+}
+
+run "outbound_role_assignment_resource_ids" {
+  command = apply
+
+  variables {
+    outbound_role_assignments = {
+      reader = {
+        role_definition_id_or_name = "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+        scope                      = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg"
+      }
+    }
+  }
+
+  assert {
+    condition     = output.outbound_role_assignment_resource_ids["reader"] == azapi_resource.role_assignments["reader"].id
+    error_message = "The outbound role assignment resource ID output must map each assignment key to its resource ID."
   }
 }
